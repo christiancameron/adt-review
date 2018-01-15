@@ -49,11 +49,6 @@ public class ArrayMap<K, V> implements Map<K, V> {
     private Association<K,V>[] internal;
 
     /**
-     * The size of the internal array. Size = number of non-null elements in the array
-     */
-    private int size = 0;
-
-    /**
      * Plain constructor. 
      */
     @SuppressWarnings("unchecked")
@@ -101,6 +96,9 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
+    	if(key==null)
+    		return;
+    	//The new Association to be inserted into the internal array.
     	Association<K, V> newAsso = new Association<K, V>(key,val);
     	int i;
     	for(i = 0; i < internal.length; i++) {
@@ -108,9 +106,16 @@ public class ArrayMap<K, V> implements Map<K, V> {
     	        internal[i] = newAsso;
     	        return;
     		}
+    		//Key is already in the list, so return
+    		else if(internal[i].key.equals(key)) {
+    			internal[i].val = val;
+    			return;
+    		}
+    			
     	}
+    	//The internal array is full. So grow it.
     	grow();
-    	internal[i+1] = newAsso;
+    	internal[i] = newAsso;
     }
 
     /**
@@ -119,7 +124,20 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return The value associated with this key, null if none exists
      */
     public V get(K key) {
-        throw new UnsupportedOperationException();
+    	//Precondition
+    	if(key==null)
+    		return null;
+    	for(int i = 0; i < internal.length; i++) {
+    		if(internal[i]==null)
+    	        return null;
+    		//If the two keys are identical, then return;
+    		if(internal[i].key.equals(key)) {
+    			return internal[i].val;
+    		}
+    		
+    	}
+    	
+    	return null;
     }
 
     /**
@@ -136,7 +154,6 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @param key The key to remove
      */
     public void remove(K key) {
-    	size--;
         throw new UnsupportedOperationException();
     }
     
