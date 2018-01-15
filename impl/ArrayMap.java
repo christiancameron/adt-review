@@ -48,7 +48,10 @@ public class ArrayMap<K, V> implements Map<K, V> {
      */
     private Association<K,V>[] internal;
 
-    
+    /**
+     * The size of the internal array. Size = number of non-null elements in the array
+     */
+    private int size = 0;
 
     /**
      * Plain constructor. 
@@ -80,20 +83,17 @@ public class ArrayMap<K, V> implements Map<K, V> {
         	int i = 0;
 			@Override
 			public boolean hasNext() {
-				return i < internal.length;
+				return i < internal.length && internal[i] != null;
 			}
 
 			@Override
 			public K next() {
-				K key = internal[i].key;
-				i++;
+				K key = internal[i++].key;
 				return key;
 			}
         	
         };
     }
-   
-    
     
     /**
      * Add an association to the map.
@@ -101,7 +101,16 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @param val The value to which this key is associated
      */
     public void put(K key, V val) {
-        throw new UnsupportedOperationException(); 
+    	Association<K, V> newAsso = new Association<K, V>(key,val);
+    	int i;
+    	for(i = 0; i < internal.length; i++) {
+    		if(internal[i]==null) {
+    	        internal[i] = newAsso;
+    	        return;
+    		}
+    	}
+    	grow();
+    	internal[i+1] = newAsso;
     }
 
     /**
@@ -127,6 +136,7 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @param key The key to remove
      */
     public void remove(K key) {
+    	size--;
         throw new UnsupportedOperationException();
     }
     
