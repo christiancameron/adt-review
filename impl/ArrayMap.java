@@ -76,7 +76,21 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException(); 
+        return new Iterator<K>() {
+        	int i = 0;
+			@Override
+			public boolean hasNext() {
+				return i < internal.length;
+			}
+
+			@Override
+			public K next() {
+				K key = internal[i].key;
+				i++;
+				return key;
+			}
+        	
+        };
     }
    
     
