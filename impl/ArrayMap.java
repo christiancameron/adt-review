@@ -86,6 +86,11 @@ public class ArrayMap<K, V> implements Map<K, V> {
 				K key = internal[i++].key;
 				return key;
 			}
+			
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
         	
         };
     }
@@ -168,23 +173,30 @@ public class ArrayMap<K, V> implements Map<K, V> {
     		if(internal[i]==null)
     	        return;
     		
-    		//If the two keys are identical, then replace the last association in internal
-    		//	with the index of the removed association.
+    		/**
+    		 * If the two keys are identical, then replace the last association in internal
+    		 * with the index of the removed association.
+    		 */
     		else if(internal[i].key.equals(key)) {
+    			/**
+    			 * Inner loop to find the last value in the internal array.
+    			 */
     			for(int j = i+1; j < internal.length; j++) {
+    				//Found the last value.
     				if(internal[j]==null) {
-    					if(j==i) {
+    					//Check to see if the item to remove is the last item.
+    					if(j-1==i) {
+    						//Remove the last item.
     						internal[i] = null;
     						return;
     					}
+    					//Swap and remove the association at i.
     					Association<K, V> lastValue = internal[j-1];
-    					
     					internal[j-1] = null;
     					internal[i] = lastValue;
     					return;
     				}
     			}
-    			System.out.println("something went wrong.");
     		}
     		
     	}
