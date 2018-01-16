@@ -1,10 +1,9 @@
 package impl;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
-import adt.Set;
 import adt.Map;
+import adt.Set;
 
 /**
  * MapSet
@@ -24,6 +23,7 @@ public class MapSet<E> implements Set<E> {
      */
     private Map<E, String> internal;
     
+    
     /**
      * The size of the internal map 
      */
@@ -38,26 +38,28 @@ public class MapSet<E> implements Set<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         return new Iterator<E>() {
-        	
-        	int i = 0;
-        	 
-			@Override
-			public boolean hasNext() {
-				return false;
-			}
-
-			@Override
-			public E next() {
-				return null;
-			}
-			
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-        	 
-         };
+         return internal.iterator();
+        		 
+//        		 new Iterator<E>() {
+//        	
+//        	int i = 0;
+//        	 
+//			@Override
+//			public boolean hasNext() {
+//				return i < size;
+//			}
+//
+//			@Override
+//			public E next() {
+//				return null;
+//			}
+//			
+//			@Override
+//			public void remove() {
+//				throw new UnsupportedOperationException();
+//			}
+//        	 
+//         };
     }
 
     /**
@@ -74,6 +76,7 @@ public class MapSet<E> implements Set<E> {
         		 return; 
          }
          //Item was not found in the set, so add the item
+         
          internal.put(item, null);
          size++;
     }
@@ -103,7 +106,7 @@ public class MapSet<E> implements Set<E> {
     * @return The number of items.
     */
     public int size() {
-         throw new UnsupportedOperationException();
+         return size;
     }
 
     /**
@@ -111,7 +114,7 @@ public class MapSet<E> implements Set<E> {
      * @return True if the set is empty, false otherwise.
      */
     public boolean isEmpty() {
-         throw new UnsupportedOperationException();
+         return size <= 0;
     }
     
     @Override
