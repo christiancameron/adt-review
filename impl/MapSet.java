@@ -1,5 +1,6 @@
 package impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import adt.Set;
@@ -23,6 +24,11 @@ public class MapSet<E> implements Set<E> {
      */
     private Map<E, String> internal;
     
+    /**
+     * The size of the internal map 
+     */
+    private int size = 0;
+    
     public MapSet() {
         this.internal = new ArrayMap<E,String>();
     }
@@ -32,7 +38,26 @@ public class MapSet<E> implements Set<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         throw new UnsupportedOperationException();
+         return new Iterator<E>() {
+        	
+        	int i = 0;
+        	 
+			@Override
+			public boolean hasNext() {
+				return false;
+			}
+
+			@Override
+			public E next() {
+				return null;
+			}
+			
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+        	 
+         };
     }
 
     /**
@@ -41,7 +66,16 @@ public class MapSet<E> implements Set<E> {
      * @param item The item to add
      */
     public void add(E item) {
-         throw new UnsupportedOperationException();
+         Iterator<E> it = iterator();
+         while(it.hasNext()){
+        	 E curr = it.next();
+        	 //Check if the item is already in the set
+        	 if(item.equals(curr))
+        		 return; 
+         }
+         //Item was not found in the set, so add the item
+         internal.put(item, null);
+         size++;
     }
 
     /**
@@ -50,7 +84,7 @@ public class MapSet<E> implements Set<E> {
      * @return True if the item is in the set, false otherwise
      */
     public boolean contains(E item) {
-         throw new UnsupportedOperationException();
+         return internal.containsKey(item);
     }
 
     /**
@@ -58,12 +92,14 @@ public class MapSet<E> implements Set<E> {
      * (ignore otherwise).
      * @param item The item to remove
      */
-   public void remove(E item) {
-        throw new UnsupportedOperationException();
-    }
+	public void remove(E item) {
+		if(contains(item))
+			size--;
+		internal.remove(item);
+	}
 
    /**
-    * The number of itmes in the set
+    * The number of items in the set
     * @return The number of items.
     */
     public int size() {
