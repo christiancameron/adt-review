@@ -25,7 +25,7 @@ public class MapSet<E> implements Set<E> {
     
     
     /**
-     * The size of the internal map 
+     * The size of the internal map
      */
     private int size = 0;
     
@@ -38,28 +38,26 @@ public class MapSet<E> implements Set<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         return internal.iterator();
-        		 
-//        		 new Iterator<E>() {
-//        	
-//        	int i = 0;
-//        	 
-//			@Override
-//			public boolean hasNext() {
-//				return i < size;
-//			}
-//
-//			@Override
-//			public E next() {
-//				return null;
-//			}
-//			
-//			@Override
-//			public void remove() {
-//				throw new UnsupportedOperationException();
-//			}
-//        	 
-//         };
+         return new Iterator<E>() {
+        	
+        	int i = 0;
+        	 
+			@Override
+			public boolean hasNext() {
+				return i < size;
+			}
+
+			@Override
+			public E next() {
+				return null;
+			}
+			
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+        	 
+         };
     }
 
     /**
