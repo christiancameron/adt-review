@@ -1,7 +1,6 @@
 package impl;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import adt.Map;
 
@@ -47,6 +46,9 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * representation of this map.
      */
     private Association<K,V>[] internal;
+    
+    //Size of the array
+    private int size = 0;
 
     /**
      * Plain constructor. 
@@ -103,24 +105,38 @@ public class ArrayMap<K, V> implements Map<K, V> {
     public void put(K key, V val) {
     	if(key==null)
     		return;
-    	//The new Association to be inserted into the internal array.
-    	Association<K, V> newAsso = new Association<K, V>(key,val);
-    	int i;
-    	for(i = 0; i < internal.length; i++) {
-    		if(internal[i]==null) {
-    	        internal[i] = newAsso;
-    	        return;
-    		}
-    		//Key is already in the list, so return
-    		else if(internal[i].key.equals(key)) {
-    			internal[i].val = val;
-    			return;
-    		}
-    			
+    	
+    	int indexOfKey = getIndex(key);
+    	
+    	if(indexOfKey==-1) {
+    		if(size >= internal.length)
+    			grow();
+    		
+			internal[size++] = new Association<K, V>(key,val);
     	}
-    	//The internal array is full. So grow it.
-    	grow();
-    	internal[i] = newAsso;
+    	
+    	//Replace the value of the old key
+    	else {
+    		internal[indexOfKey].val = val;
+    	}
+    }
+    
+    /**
+     * Gets the index at the param key
+     * @param key, any type of key.
+     * @return the index of the key, -1 if no such key exists.
+     */
+    private int getIndex(K key) {
+    	if(key==null)
+    		return -1;
+    	
+    	for(int i = 0; i < size; i++) {
+			if(internal[i].key.equals(key))
+				return i;
+		}
+    	
+    	return -1;
+    	
     }
 
     /**
@@ -132,17 +148,17 @@ public class ArrayMap<K, V> implements Map<K, V> {
     	//Precondition
     	if(key==null)
     		return null;
-    	for(int i = 0; i < internal.length; i++) {
-    		if(internal[i]==null)
-    	        return null;
-    		//If the two keys are identical, then return;
+    	
+    	for(int i = 0; i < size; i++) {
+    		//If the two keys are identical, then return.
     		if(internal[i].key.equals(key)) {
     			return internal[i].val;
     		}
-    		
     	}
     	
+    	//No key was found in the internal array.
     	return null;
+
     }
 
     /**
@@ -151,9 +167,10 @@ public class ArrayMap<K, V> implements Map<K, V> {
      * @return true if there is an association for this key, false otherwise
      */
     public boolean containsKey(K key) {
-        for(int i = 0; i < internal.length; i++) {
-        	if(internal[i]==null)
-        		return false;
+    	if(key==null)
+    		return false;
+    	
+        for(int i = 0; i < size; i++) {
         	if(internal[i].key.equals(key))
         		return true;
         }
@@ -169,37 +186,24 @@ public class ArrayMap<K, V> implements Map<K, V> {
     	if(key==null)
     		return;
     	
-    	for(int i = 0; i < internal.length; i++) {
-    		if(internal[i]==null)
-    	        return;
-    		
-    		/**
-    		 * If the two keys are identical, then replace the last association in internal
-    		 * with the index of the removed association.
-    		 */
-    		else if(internal[i].key.equals(key)) {
-    			/**
-    			 * Inner loop to find the last value in the internal array.
-    			 */
-    			for(int j = i+1; j < internal.length; j++) {
-    				//Found the last value.
-    				if(internal[j]==null) {
-    					//Check to see if the item to remove is the last item.
-    					if(j-1==i) {
-    						//Remove the last item.
-    						internal[i] = null;
-    						return;
-    					}
-    					//Swap and remove the association at i.
-    					Association<K, V> lastValue = internal[j-1];
-    					internal[j-1] = null;
-    					internal[i] = lastValue;
-    					return;
-    				}
+    	for(int i = 0; i < size; i++) {
+    		//Found the key to remove.
+    		if(internal[i].key.equals(key)) {
+    			//The last value is the one to be removed.
+    			if(i==size-1)
+    				internal[i]=null;
+    			
+    			//Take last value in internal array and replace it at 'i' index
+    			else {
+    				Association<K, V> lastValue = internal[size-1];
+					internal[size-1] = null;
+					internal[i] = lastValue;
     			}
+    			size--;
+    			
     		}
-    		
     	}
+
     }
     
     @Override
