@@ -23,14 +23,13 @@ public class MapSet<E> implements Set<E> {
      */
     private Map<E, String> internal;
     
-    
     /**
      * The size of the internal map
      */
     private int size = 0;
     
     public MapSet() {
-        this.internal = new ArrayMap<E,String>();
+        this.internal = new ArrayMap<E, String>();
     }
     
     /**
@@ -38,26 +37,7 @@ public class MapSet<E> implements Set<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         return new Iterator<E>() {
-        	
-        	int i = 0;
-        	 
-			@Override
-			public boolean hasNext() {
-				return i < size;
-			}
-
-			@Override
-			public E next() {
-				return null;
-			}
-			
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-        	 
-         };
+    	return internal.iterator();
     }
 
     /**
@@ -66,17 +46,11 @@ public class MapSet<E> implements Set<E> {
      * @param item The item to add
      */
     public void add(E item) {
-         Iterator<E> it = iterator();
-         while(it.hasNext()){
-        	 E curr = it.next();
-        	 //Check if the item is already in the set
-        	 if(item.equals(curr))
-        		 return; 
-         }
-         //Item was not found in the set, so add the item
-         
-         internal.put(item, null);
-         size++;
+    	if(!contains(item)) {
+    		//Item was not found in the set, so add the item
+            internal.put(item, null);
+            size++;
+    	}
     }
 
     /**
@@ -94,9 +68,10 @@ public class MapSet<E> implements Set<E> {
      * @param item The item to remove
      */
 	public void remove(E item) {
-		if(contains(item))
+		if(contains(item)) {
 			size--;
-		internal.remove(item);
+			internal.remove(item);
+		}
 	}
 
    /**
