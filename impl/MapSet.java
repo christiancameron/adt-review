@@ -46,6 +46,9 @@ public class MapSet<E> implements Set<E> {
      * @param item The item to add
      */
     public void add(E item) {
+    	if(item==null)
+    		return;
+    	
     	if(!contains(item)) {
     		//Item was not found in the set, so add the item
             internal.put(item, null);
@@ -59,7 +62,10 @@ public class MapSet<E> implements Set<E> {
      * @return True if the item is in the set, false otherwise
      */
     public boolean contains(E item) {
-         return internal.containsKey(item);
+    	if(item==null || size ==0)
+    		return false;
+    	
+        return internal.containsKey(item);
     }
 
     /**
@@ -68,6 +74,9 @@ public class MapSet<E> implements Set<E> {
      * @param item The item to remove
      */
 	public void remove(E item) {
+		if(item==null || size ==0)
+    		return;
+		
 		if(contains(item)) {
 			size--;
 			internal.remove(item);

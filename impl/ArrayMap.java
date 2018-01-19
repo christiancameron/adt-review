@@ -170,7 +170,13 @@ public class ArrayMap<K, V> implements Map<K, V> {
     	if(key==null)
     		return false;
     	
+    	if(size==0)
+    		return false;
+    	
         for(int i = 0; i < size; i++) {
+        	//Works but bad.
+//        	if(internal[i].key.toString().equals((key).toString()))
+//        		return true;
         	if(internal[i].key.equals(key))
         		return true;
         }
@@ -200,10 +206,13 @@ public class ArrayMap<K, V> implements Map<K, V> {
 					internal[i] = lastValue;
     			}
     			size--;
+    			return;
     			
     		}
     	}
     }
+    
+    
     
     @Override
     public String toString() {
