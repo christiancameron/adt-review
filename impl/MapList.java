@@ -1,6 +1,9 @@
 package impl;
 
 import java.util.Iterator;
+
+import org.omg.CORBA.INTERNAL;
+
 import adt.Map;
 import adt.List;
 
@@ -22,6 +25,11 @@ public class MapList<E> implements List<E> {
      */
     private Map<Integer, E> internal;
     
+    /**
+     * The size of the internal array.
+     */
+    private int size = 0;
+    
     
     /**
      * Constructor that is given the internal representation.
@@ -41,7 +49,7 @@ public class MapList<E> implements List<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         throw new UnsupportedOperationException();
+         return (Iterator<E>) internal.iterator();
     }
 
     /**
@@ -50,7 +58,7 @@ public class MapList<E> implements List<E> {
      * @param element The element to be appended
      */
     public void add(E element) {
-         throw new UnsupportedOperationException();
+         internal.put(size, element);
     }
 
     /**
@@ -61,7 +69,10 @@ public class MapList<E> implements List<E> {
      * @param element The element at the specified position
      */
     public void set(int index, E element) {
-         throw new UnsupportedOperationException();
+    	if(index < 0 || index > size())
+    		throw new IndexOutOfBoundsException();
+    	
+    	internal.put(index, element);
     }
 
     /**
@@ -71,7 +82,10 @@ public class MapList<E> implements List<E> {
      * @return The element at the specified position
      */
     public E get(int index) {
-         throw new UnsupportedOperationException();
+    	if(index < 0 || index > size())
+    		throw new IndexOutOfBoundsException();
+    	
+    	return internal.get(index);
     }
 
 
@@ -86,7 +100,7 @@ public class MapList<E> implements List<E> {
      * @param element The element which to insert
      */
     public void insert(int index, E element) {
-         throw new UnsupportedOperationException();
+    	set(index, element);
     }
 
     /**
