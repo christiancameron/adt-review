@@ -2,10 +2,8 @@ package impl;
 
 import java.util.Iterator;
 
-import org.omg.CORBA.INTERNAL;
-
-import adt.Map;
 import adt.List;
+import adt.Map;
 
 /**
  * MapList
@@ -49,7 +47,37 @@ public class MapList<E> implements List<E> {
      * unsupported, nor is concurrent modification checked).
      */
     public Iterator<E> iterator() {
-         return (Iterator<E>) internal.iterator();
+         return new Iterator<E>() {
+
+        	 int i = 0;
+        	 
+        	 @Override
+        	 public boolean hasNext() {
+        		 return i < size;
+        	 }
+
+        	 @Override
+        	 public E next() {
+        		 return internal.get(i);
+        	 }
+        	 
+         };
+    }
+    
+    /**
+     * Helper method that shifts all the elements over by one space.
+     * Creates a hold at index = start.
+     * @param start
+     */
+    private void shiftElements(int start) {
+    	if(start < 0 || start >= size)
+    		throw new IndexOutOfBoundsException();
+    	
+    	for(int i = start; i < size; i+=2) {
+    		E value = internal.get(i);
+    		internal.remove(i);
+    		internal.put(i+1, value);
+    	}
     }
 
     /**
@@ -58,7 +86,7 @@ public class MapList<E> implements List<E> {
      * @param element The element to be appended
      */
     public void add(E element) {
-         internal.put(size, element);
+         internal.put(size++, element);
     }
 
     /**
@@ -69,7 +97,7 @@ public class MapList<E> implements List<E> {
      * @param element The element at the specified position
      */
     public void set(int index, E element) {
-    	if(index < 0 || index > size())
+    	if(index < 0 || index > size)
     		throw new IndexOutOfBoundsException();
     	
     	internal.put(index, element);
@@ -82,12 +110,11 @@ public class MapList<E> implements List<E> {
      * @return The element at the specified position
      */
     public E get(int index) {
-    	if(index < 0 || index > size())
+    	if(index < 0 || index > size)
     		throw new IndexOutOfBoundsException();
     	
     	return internal.get(index);
     }
-
 
     /**
      * Insert a new item at the specified position, shifting the
@@ -100,7 +127,10 @@ public class MapList<E> implements List<E> {
      * @param element The element which to insert
      */
     public void insert(int index, E element) {
-    	set(index, element);
+    	if(index < 0 || index > size)
+    		throw new IndexOutOfBoundsException();
+    	
+    	internal.put(index, element);
     }
 
     /**
@@ -112,7 +142,17 @@ public class MapList<E> implements List<E> {
      * @return The item removed
      */
    public E remove(int index) {
-        throw new UnsupportedOperationException();
+	   if(index < 0 || index > size)
+		   throw new IndexOutOfBoundsException();
+	   
+	   E value = internal.get(index);
+	   if(value==null)
+		   return null;
+	   
+	   internal.remove(index);
+	   size--;
+	   return value;
+	   
    }
 
    /**
@@ -120,7 +160,7 @@ public class MapList<E> implements List<E> {
     * @return The number of elements in this list.
     */
     public int size() {
-         throw new UnsupportedOperationException();
+    	return size;
     }
     
     @Override
