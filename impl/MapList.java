@@ -58,7 +58,7 @@ public class MapList<E> implements List<E> {
 
         	 @Override
         	 public E next() {
-        		 return internal.get(i);
+        		 return internal.get(i++);
         	 }
         	 
          };
