@@ -70,14 +70,15 @@ public class MapList<E> implements List<E> {
      * @param start
      */
     private void shiftElements(int start) {
-    	if(start < 0 || start >= size)
+    	if(start < 0 || start > size)
     		throw new IndexOutOfBoundsException();
-    	
-    	for(int i = start; i < size; i+=2) {
+
+    	for (int i = size-1; i >= start; i--) {     
     		E value = internal.get(i);
     		internal.remove(i);
     		internal.put(i+1, value);
     	}
+
     }
 
     /**
@@ -129,7 +130,8 @@ public class MapList<E> implements List<E> {
     public void insert(int index, E element) {
     	if(index < 0 || index > size)
     		throw new IndexOutOfBoundsException();
-    	
+
+    	this.shiftElements(index);
     	internal.put(index, element);
     }
 
@@ -146,10 +148,20 @@ public class MapList<E> implements List<E> {
 		   throw new IndexOutOfBoundsException();
 	   
 	   E value = internal.get(index);
+	   //Check if item exists
 	   if(value==null)
 		   return null;
 	   
-	   internal.remove(index);
+	   //Shift all other elements with greater keys over.
+	   int i;
+	   for(i = index; i < size-1; i++) {
+		   E tmp = internal.get(i+1);
+		   internal.remove(i);
+		   internal.put(i                                                                                , tmp);
+	   }
+	   
+	   internal.remove(i);
+	   
 	   size--;
 	   return value;
 	   
