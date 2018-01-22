@@ -63,23 +63,6 @@ public class MapList<E> implements List<E> {
         	 
          };
     }
-    
-    /**
-     * Helper method that shifts all the elements over by one space.
-     * Creates a hold at index = start.
-     * @param start
-     */
-    private void shiftElements(int start) {
-    	if(start < 0 || start > size)
-    		throw new IndexOutOfBoundsException();
-
-    	for (int i = size-1; i >= start; i--) {     
-    		E value = internal.get(i);
-    		internal.remove(i);
-    		internal.put(i+1, value);
-    	}
-
-    }
 
     /**
      * Append the specified element to the end of this list.
@@ -131,8 +114,14 @@ public class MapList<E> implements List<E> {
     	if(index < 0 || index > size)
     		throw new IndexOutOfBoundsException();
 
-    	this.shiftElements(index);
+    	for (int i = size-1; i > index; i--) {     
+    		E value = internal.get(i);
+    		internal.put(i+1, value);
+    	}
+
+    	
     	internal.put(index, element);
+    	size++;
     }
 
     /**
@@ -157,10 +146,11 @@ public class MapList<E> implements List<E> {
 	   for(i = index; i < size-1; i++) {
 		   E tmp = internal.get(i+1);
 		   internal.remove(i);
-		   internal.put(i                                                                                , tmp);
+		   internal.put(i, tmp);
 	   }
 	   
-	   internal.remove(i);
+	   //Remove the last element
+	   internal.remove(size-1);
 	   
 	   size--;
 	   return value;
