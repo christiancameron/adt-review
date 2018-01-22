@@ -81,7 +81,7 @@ public class MapList<E> implements List<E> {
      * @param element The element at the specified position
      */
     public void set(int index, E element) {
-    	if(index < 0 || index > size)
+    	if(index < 0 || index >= size)
     		throw new IndexOutOfBoundsException();
     	
     	internal.put(index, element);
@@ -94,7 +94,7 @@ public class MapList<E> implements List<E> {
      * @return The element at the specified position
      */
     public E get(int index) {
-    	if(index < 0 || index > size)
+    	if(index < 0 || index >= size)
     		throw new IndexOutOfBoundsException();
     	
     	return internal.get(index);
@@ -114,7 +114,7 @@ public class MapList<E> implements List<E> {
     	if(index < 0 || index > size)
     		throw new IndexOutOfBoundsException();
 
-    	for (int i = size-1; i > index; i--) {     
+    	for (int i = size-1; i >= index; i--) {     
     		E value = internal.get(i);
     		internal.put(i+1, value);
     	}
@@ -133,7 +133,7 @@ public class MapList<E> implements List<E> {
      * @return The item removed
      */
    public E remove(int index) {
-	   if(index < 0 || index > size)
+	   if(index < 0 || index >= size)
 		   throw new IndexOutOfBoundsException();
 	   
 	   E value = internal.get(index);
