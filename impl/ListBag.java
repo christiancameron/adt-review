@@ -15,7 +15,7 @@ import adt.List;
  * calls a "bag" (but he's wrong). 
  * 
  * CSCI 345, Wheaton College
- * Spring 2016
+ * Spring 2018
  * @param <E> The base-type of the bag
  */
 public class ListBag<E> implements Bag<E> {
@@ -25,7 +25,7 @@ public class ListBag<E> implements Bag<E> {
      * List)
      */
     private List<E> internal;
-    
+
     public ListBag() {
             internal = new MapList<E>();
     }
@@ -43,30 +43,36 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to add
      */
     public void add(E item) {
-    	int lastOcc = lastOccurrence(item);
+    	if(item==null)
+    		return;
+    	
+    	int firstOcc = firstOccurrence(item);
     	
     	//This is the first time this item will be added to the list.
-    	if(lastOcc==-1)
+    	if(firstOcc==-1)
     		internal.add(item);
     	else
-    		internal.insert(lastOcc+1, item);
+    		internal.insert(firstOcc+1, item);
     }
     
     /**
-     * Helper method to return the index of the last occurrence of a certain item.
+     * Helper method to return the index of the first occurrence of a certain item.
      * @param item, the item to look at
      * @return an index in range if item occurs, else -1
      */
-    private int lastOccurrence(E item) {
-    	int i = -1;
+    private int firstOccurrence(E item) {
+    	if(item==null)
+    		return -1;
+    	
+    	int i = 0;
     	Iterator<E> it = iterator();
     	while(it.hasNext()) {
     		E tmp = it.next();
-        	if(tmp.equals(item)) {
-        		i++;
-        	}
+        	if(tmp.equals(item))
+        		return i;
+        	i++;
     	}
-    	return i;
+    	return -1;
     }
 
     /**
@@ -75,12 +81,18 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of occurrences of this item in the bag
      */
     public int count(E item) {
+    	if(item==null)
+    		return 0;
+    	
     	int count = 0;
     	//Count the occurrences of a given item
     	Iterator<E> it = iterator();
         while(it.hasNext()) {
         	if(it.next().equals(item))
         		count++;
+        	//The group of items are already counted, so exit the loop.
+        	else if(count!=0)
+        		break;
         }
         return count;
     }
@@ -91,36 +103,19 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to remove
      */
     public void remove(E item) {
-		if (item == null)
+		if (item == null || isEmpty())
 			return;
-
-		// Find the first occurrence of the item, to find index.
-		int i = 0;
-		Iterator<E> it = iterator();
-		while (it.hasNext()) {
-			if (it.next().equals(item)) {
-				break;
-			}
-			i++;
-		}
 		
 		//Remove all occurrences of the item
-		while(true) {
-			//Check indices 
-			if(i >= internal.size())
-				break;
-			
-			//Remove the item and increment counter
-			else if(internal.remove(i)==item)
-				i++;
-			
-			//Removed one element too many, insert it back.
-			else {
-				internal.insert(i, item);
-				break;
+		for(int i = 0; i < internal.size(); i++) {
+			if(internal.get(i).equals(item)) {
+				//Remove shifts elements down
+				internal.remove(i);
+				//Repeat for the same i
+				i--;
 			}
 		}
-    }
+    } 
 
     /**
      * The number of items in the bag. This is the sum
@@ -136,7 +131,7 @@ public class ListBag<E> implements Bag<E> {
      * @return True if the bag is empty, false otherwise.
      */
     public boolean isEmpty() {
-    	return internal.size()!=0;
+    	return internal.size()==0;
     }
     
     @Override
