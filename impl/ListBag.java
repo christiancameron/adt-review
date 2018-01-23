@@ -45,6 +45,22 @@ public class ListBag<E> implements Bag<E> {
     public void add(E item) {
          internal.add(item);
     }
+    
+    /**
+     * Helper method to return the index of the last occurence of a certain item.
+     * @param item, the item to look at
+     * @return an index in range if item occurs, else -1
+     */
+    private int lastOccurence(E item) {
+    	int i = -1;
+    	while(iterator().hasNext()) {
+        	if(iterator().next().equals(item)) {
+        		i++;
+        	}
+        		
+        }
+    	return i;
+    }
 
     /**
      * How many times does this bag contain this item?
@@ -100,9 +116,18 @@ public class ListBag<E> implements Bag<E> {
      */
     public int size() {
 		int count = 0;
-		while (iterator().hasNext()) {
-			if (true) {
+		//Count the number of unique items.
+		E prevItem = null;
+		while(iterator().hasNext()) {
+			E currItem = iterator().next();
+			if(currItem==null)
+				break;
+			
+			else if(!currItem.equals(prevItem)) {
+				count++;
 			}
+			
+			prevItem = currItem;
 		}
 		return count;
     }
