@@ -145,7 +145,6 @@ public class MapList<E> implements List<E> {
 	   int i;
 	   for(i = index; i < size-1; i++) {
 		   E tmp = internal.get(i+1);
-		   internal.remove(i);
 		   internal.put(i, tmp);
 	   }
 	   
