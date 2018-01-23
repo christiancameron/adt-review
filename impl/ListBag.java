@@ -34,7 +34,7 @@ public class ListBag<E> implements Bag<E> {
      * unsupported, nor is concurrent modification checked).
      */
    public Iterator<E> iterator() {
-        throw new UnsupportedOperationException();
+        return internal.iterator();
     }
 
     /**
@@ -43,7 +43,7 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to add
      */
     public void add(E item) {
-         throw new UnsupportedOperationException();
+         internal.add(item);
     }
 
     /**
@@ -52,7 +52,13 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of occurences of this item in the bag
      */
     public int count(E item) {
-         throw new UnsupportedOperationException();
+    	int count = 0;
+    	//Count the occurences of a given item
+        while(iterator().hasNext()) {
+        	if(iterator().next().equals(item))
+        		count++;
+        }
+        return count;
     }
 
     /**
@@ -61,7 +67,30 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to remove
      */
     public void remove(E item) {
-         throw new UnsupportedOperationException();
+		if (item == null)
+			return;
+
+		// Find the first occurrence of the item, to find index.
+		int i = 0;
+		while (iterator().hasNext()) {
+			if (iterator().next().equals(item)) {
+				break;
+			}
+			i++;
+		}
+		
+		//Now remove all occurrences of the item
+		while(true) {
+			if(internal.remove(i)==item)
+				i++;
+			else {
+				//Removed one element too many, insert it back.
+				internal.insert(i, item);
+				break;
+			}
+		}
+     
+         
     }
 
     /**
@@ -70,7 +99,12 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of items.
      */
     public int size() {
-         throw new UnsupportedOperationException();
+		int count = 0;
+		while (iterator().hasNext()) {
+			if (true) {
+			}
+		}
+		return count;
     }
 
     /**
