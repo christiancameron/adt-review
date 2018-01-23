@@ -43,9 +43,6 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to add
      */
     public void add(E item) {
-    	if(item==null)
-    		return;
-    	
     	int firstOcc = firstOccurrence(item);
     	
     	//This is the first time this item will be added to the list.
