@@ -34,30 +34,7 @@ public class ListBag<E> implements Bag<E> {
      * unsupported, nor is concurrent modification checked).
      */
    public Iterator<E> iterator() {
-        return new Iterator<E>() {
-        	
-        	int i = 0;
-			@Override
-			public boolean hasNext() {
-				return i < internal.size();
-			}
-
-			@Override
-			public E next() {
-				if(hasNext()) {
-					E tmp = internal.get(i);
-					i++;;
-					return tmp;
-				}
-				throw new UnsupportedOperationException();
-			}
-			
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
-        	
-        };
+        return internal.iterator();
     }
 
     /**
@@ -127,18 +104,22 @@ public class ListBag<E> implements Bag<E> {
 			i++;
 		}
 		
-		//Now remove all occurrences of the item
+		//Remove all occurrences of the item
 		while(true) {
-			if(internal.remove(i)==item)
+			//Check indices 
+			if(i >= internal.size())
+				break;
+			
+			//Remove the item and increment counter
+			else if(internal.remove(i)==item)
 				i++;
+			
+			//Removed one element too many, insert it back.
 			else {
-				//Removed one element too many, insert it back.
 				internal.insert(i, item);
 				break;
 			}
 		}
-     
-         
     }
 
     /**
