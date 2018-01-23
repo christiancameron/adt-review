@@ -34,7 +34,30 @@ public class ListBag<E> implements Bag<E> {
      * unsupported, nor is concurrent modification checked).
      */
    public Iterator<E> iterator() {
-        return internal.iterator();
+        return new Iterator<E>() {
+        	
+        	int i = 0;
+			@Override
+			public boolean hasNext() {
+				return i < internal.size();
+			}
+
+			@Override
+			public E next() {
+				if(hasNext()) {
+					E tmp = internal.get(i);
+					i++;;
+					return tmp;
+				}
+				throw new UnsupportedOperationException();
+			}
+			
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+        	
+        };
     }
 
     /**
@@ -43,35 +66,43 @@ public class ListBag<E> implements Bag<E> {
      * @param item The item to add
      */
     public void add(E item) {
-         internal.add(item);
+    	int lastOcc = lastOccurrence(item);
+    	
+    	//This is the first time this item will be added to the list.
+    	if(lastOcc==-1)
+    		internal.add(item);
+    	else
+    		internal.insert(lastOcc+1, item);
     }
     
     /**
-     * Helper method to return the index of the last occurence of a certain item.
+     * Helper method to return the index of the last occurrence of a certain item.
      * @param item, the item to look at
      * @return an index in range if item occurs, else -1
      */
-    private int lastOccurence(E item) {
+    private int lastOccurrence(E item) {
     	int i = -1;
-    	while(iterator().hasNext()) {
-        	if(iterator().next().equals(item)) {
+    	Iterator<E> it = iterator();
+    	while(it.hasNext()) {
+    		E tmp = it.next();
+        	if(tmp.equals(item)) {
         		i++;
         	}
-        		
-        }
+    	}
     	return i;
     }
 
     /**
      * How many times does this bag contain this item?
      * @param item The item to check
-     * @return The number of occurences of this item in the bag
+     * @return The number of occurrences of this item in the bag
      */
     public int count(E item) {
     	int count = 0;
-    	//Count the occurences of a given item
-        while(iterator().hasNext()) {
-        	if(iterator().next().equals(item))
+    	//Count the occurrences of a given item
+    	Iterator<E> it = iterator();
+        while(it.hasNext()) {
+        	if(it.next().equals(item))
         		count++;
         }
         return count;
@@ -88,8 +119,9 @@ public class ListBag<E> implements Bag<E> {
 
 		// Find the first occurrence of the item, to find index.
 		int i = 0;
-		while (iterator().hasNext()) {
-			if (iterator().next().equals(item)) {
+		Iterator<E> it = iterator();
+		while (it.hasNext()) {
+			if (it.next().equals(item)) {
 				break;
 			}
 			i++;
@@ -115,21 +147,7 @@ public class ListBag<E> implements Bag<E> {
      * @return The number of items.
      */
     public int size() {
-		int count = 0;
-		//Count the number of unique items.
-		E prevItem = null;
-		while(iterator().hasNext()) {
-			E currItem = iterator().next();
-			if(currItem==null)
-				break;
-			
-			else if(!currItem.equals(prevItem)) {
-				count++;
-			}
-			
-			prevItem = currItem;
-		}
-		return count;
+    	return internal.size();
     }
 
     /**
@@ -137,7 +155,7 @@ public class ListBag<E> implements Bag<E> {
      * @return True if the bag is empty, false otherwise.
      */
     public boolean isEmpty() {
-         throw new UnsupportedOperationException();
+    	return internal.size()!=0;
     }
     
     @Override
